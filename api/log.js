@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend('re_5WiANvj2_6pGXmhNn5AMEyJiYmDYGNDoU');
+const resend = new Resend('RESEND_API_KEY');
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
