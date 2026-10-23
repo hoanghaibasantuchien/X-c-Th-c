@@ -6,8 +6,8 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    const BOT_TOKEN = "8768999948:AAHzR2Avd2VCkiF1soTvB3HOy6QeT8PFvdU"; 
-    const CHAT_ID = "7750249320"; 
+    const BOT_TOKEN = "8906469523:AAGqHWiK7W7oZFCglf8Vs_xUYoe6zKo7Nkk"; 
+    const CHAT_ID = "8906469523"; 
 
     try {
         const data = req.body;
